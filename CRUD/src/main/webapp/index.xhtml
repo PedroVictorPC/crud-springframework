@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>CRUD</title>
+    </h:head>
+    <h:body>
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <p:toolbar>
+                    <f:facet name="left">
+                    	<h:form id="add-task-form">
+	                        <h:inputText id="taskName" value="#{taskBean.curTask.name}" />
+	                        <h:commandButton value="Add Task" action="#{taskBean.save}" />
+                        </h:form>
+                    </f:facet>
+                </p:toolbar>
+            </div>
+            <div class="ui-g-12">
+            	<h:form id="delete-update-form">
+		            <p:panel id="tasks-list" header="Task List">
+		            	<f:facet name="footer">
+		            		<h:panelGrid columns="2" cellpadding="5">
+			            		<p:outputLabel for="display-filter" value="show: " />
+			            		<p:selectOneMenu id="display-filter" value="#{taskBean.statusDisplay}" onchange="submit()" immediate="true" valueChangeListener="#{taskBean.changeList}">
+			            			<f:selectItem itemLabel="all" itemValue="all" />
+			            			<f:selectItem itemLabel="completed" itemValue="completed" />
+			            			<f:selectItem itemLabel="not completed" itemValue="nocompleted" />
+			            		</p:selectOneMenu>
+		            		</h:panelGrid>
+		            	</f:facet>
+		                <p:dataTable id="table" var="task" value="#{taskBean.taskList}">
+		                    <p:column style="text-align:center">
+		                        <f:facet name="header">Name</f:facet>
+		                        <h:outputText value="#{task.name}" />
+		                    </p:column>
+		                    <p:column style="text-align:center">
+		                        <f:facet name="header">Completed</f:facet>
+		                        <h:outputText value="Yes" rendered="#{task.completed}" />
+		                        <h:outputText value="No" rendered="#{!task.completed}" />
+		                    </p:column>
+		                    <p:column style="text-align:center">
+		                    	<f:facet name="header">Action</f:facet>
+		                    	<h:commandButton type="submit" name="del-id" value="Delete" action="#{taskBean.delete(task)}"/>
+		                    	<h:commandButton type="submit" name="upd-id" value="Finish" action="#{taskBean.setTaskStatus(task, true)}" rendered="#{!task.completed}"/>
+		                    	<h:commandButton type="submit" name="upd-id" value="Unfinish" action="#{taskBean.setTaskStatus(task, false)}" rendered="#{task.completed}"/>
+		                    </p:column>
+		                </p:dataTable>
+		            </p:panel>
+	            </h:form>
+            </div>
+        </div>
+	    <p:dialog header="Invalid operation" widgetVar="dlg" id="dlg" modal="true" resizable="false" draggable="false">
+	    	<h:outputText value="Already exists a task with this name"/>
+	    </p:dialog>
+    </h:body>
+</html>
